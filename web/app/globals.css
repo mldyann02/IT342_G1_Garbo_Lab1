@@ -1,8 +1,12 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #f8fafc; /* gray-50 */
+  --surface: #ffffff;    /* cards / surfaces */
+  --primary: #2563eb;    /* blue-600 */
+  --primary-600: #1e40af; /* blue-800 */
+  --foreground: #0f172a; /* slate-900 */
+  --muted: #475569;      /* slate-500 */
 }
 
 @theme inline {
@@ -24,3 +28,21 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* Utility input styles used across forms */
+.input {
+  @apply border border-gray-300 rounded px-3 py-2 w-full bg-white text-gray-900 focus:outline-none focus:ring-2;
+  box-shadow: none;
+}
+
+.btn-primary {
+  @apply bg-[color:var(--primary)] text-white px-4 py-2 rounded hover:bg-[color:var(--primary-600)];
+}
+
+.card {
+  @apply bg-[color:var(--surface)] rounded shadow p-6;
+}
+
+/* Headings and muted text helpers */
+.muted { color: var(--muted); }
+.heading { color: var(--foreground); font-weight: 600; }
