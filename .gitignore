@@ -17,3 +17,12 @@ web/.env.local
 
 # Database
 *.sql
+
+# Next.js
+web/.next/
+web/out/
+web/build
+web/.env.local
+
+# Security
+backend/src/main/resources/application.properties
