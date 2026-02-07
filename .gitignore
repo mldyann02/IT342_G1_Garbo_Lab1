@@ -1,0 +1,19 @@
+ # IDE and System Files
+.idea/
+.vscode/
+*.swp
+.DS_Store
+
+# Backend (Spring Boot)
+backend/target/
+backend/.mvn/
+backend/*.jar
+backend/bin/
+
+# Frontend (React)
+web/node_modules/
+web/build/
+web/.env.local
+
+# Database
+*.sql
