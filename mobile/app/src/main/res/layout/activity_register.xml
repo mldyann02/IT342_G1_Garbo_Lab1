@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="24dp">
+
+        <TextView
+            android:id="@+id/tvRegisterTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Create Account"
+            android:textColor="@color/brand_navy"
+            android:textSize="28sp"
+            android:fontFamily="sans-serif-medium"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:layout_marginTop="24dp"
+            />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/bg_card_rounded"
+            android:padding="18dp"
+            android:layout_marginTop="20dp"
+            android:elevation="2dp">
+
+            <EditText
+                android:id="@+id/etName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Full name"
+                android:inputType="textPersonName"
+                android:background="@drawable/bg_input_outline"
+                android:padding="8dp"
+                android:layout_marginBottom="12dp"
+                android:textColor="@color/brand_navy"
+                android:hintTextColor="#9CA3AF" />
+
+            <EditText
+                android:id="@+id/etEmail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Email"
+                android:inputType="textEmailAddress"
+                android:background="@drawable/bg_input_outline"
+                android:padding="8dp"
+                android:layout_marginBottom="12dp"
+                android:textColor="@color/brand_navy"
+                android:hintTextColor="#9CA3AF" />
+
+            <EditText
+                android:id="@+id/etPassword"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Password"
+                android:inputType="textPassword"
+                android:background="@drawable/bg_input_outline"
+                android:padding="8dp"
+                android:layout_marginBottom="16dp"
+                android:textColor="@color/brand_navy"
+                android:hintTextColor="#9CA3AF" />
+
+            <Button
+                android:id="@+id/btnRegister"
+                style="@style/Widget.AuthApp.Button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Create account"
+                android:layout_marginTop="4dp"
+                />
+
+            <TextView
+                android:id="@+id/tvLoginLink"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Already have an account? Sign in"
+                android:textColor="@color/brand_navy"
+                android:gravity="center"
+                android:layout_marginTop="12dp"
+                />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</ScrollView>
