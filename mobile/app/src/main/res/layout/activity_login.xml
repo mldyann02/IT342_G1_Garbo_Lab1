@@ -41,7 +41,7 @@
                 android:padding="8dp"
                 android:textColor="@color/brand_navy"
                 android:layout_marginBottom="12dp"
-                android:hintTextColor="#9CA3AF" />
+                android:textColorHint="#9CA3AF" />
 
             <EditText
                 android:id="@+id/etPassword"
@@ -53,7 +53,7 @@
                 android:padding="8dp"
                 android:textColor="@color/brand_navy"
                 android:layout_marginBottom="16dp"
-                android:hintTextColor="#9CA3AF" />
+                android:textColorHint="#9CA3AF" />
 
             <Button
                 android:id="@+id/btnLogin"
