@@ -8,12 +8,7 @@ export default function Home() {
 
   useEffect(() => {
     if (typeof window === "undefined") return;
-    const token = localStorage.getItem("token");
-    if (token) {
-      router.replace("/dashboard");
-    } else {
-      router.replace("/login");
-    }
+    router.replace("/login");
   }, [router]);
 
   return null;

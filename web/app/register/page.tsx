@@ -63,13 +63,34 @@ export default function RegisterPage() {
       const { confirmPassword, ...submitData } = formData;
       const res = await api.post("/api/auth/register", submitData);
       if (res.data?.token) {
-        localStorage.setItem("token", res.data.token);
-        router.push("/dashboard");
+        router.push("/login");
       }
     } catch (err: any) {
-      setError(
-        err?.response?.data || "Registration failed. Check your details.",
-      );
+      const resp = err?.response;
+      let msg = "Registration failed. Check your details.";
+
+      if (resp) {
+        if (resp.status === 409) {
+          msg = "Email already exists. Cannot register.";
+        } else {
+          const data = resp.data;
+          if (typeof data === "string") {
+            if (/email.*exist/i.test(data)) {
+              msg = "Email already exists. Cannot register.";
+            } else {
+              msg = data;
+            }
+          } else if (data?.message) {
+            if (/email.*exist/i.test(data.message)) {
+              msg = "Email already exists. Cannot register.";
+            } else {
+              msg = data.message;
+            }
+          }
+        }
+      }
+
+      setError(msg);
     } finally {
       setLoading(false);
     }
