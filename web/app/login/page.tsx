@@ -19,13 +19,11 @@ export default function LoginPage() {
     setLoading(true);
     setError(null);
     try {
-      const res = await api.post("/api/auth/login", { email, password });
-      if (res.data?.token) {
-        localStorage.setItem("token", res.data.token);
-        router.push("/dashboard");
-      }
-    } catch (err) {
-      setError("Authentication failed.");
+      await api.post("/api/auth/login", { email, password });
+      // Server sets HttpOnly cookie on success; navigate to dashboard
+      router.push("/dashboard");
+    } catch (err: any) {
+      setError(err?.response?.data?.message || "Authentication failed.");
     } finally {
       setLoading(false);
     }
