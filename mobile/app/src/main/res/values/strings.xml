@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">AuthApplication</string>
+    <string name="welcome_default">Welcome!</string>
+    <string name="welcome_with_name">Welcome, %1$s</string>
 </resources>
