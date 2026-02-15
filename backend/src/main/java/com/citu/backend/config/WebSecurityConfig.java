@@ -1,6 +1,8 @@
 package com.citu.backend.config;
 
 import com.citu.backend.security.JwtFilter;
+import org.springframework.core.env.Environment;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.cors.CorsConfiguration;
@@ -20,9 +22,11 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class WebSecurityConfig {
 
     private final JwtFilter jwtFilter;
+    private final Environment env;
 
-    public WebSecurityConfig(JwtFilter jwtFilter) {
+    public WebSecurityConfig(JwtFilter jwtFilter, Environment env) {
         this.jwtFilter = jwtFilter;
+        this.env = env;
     }
 
     @Bean
@@ -33,7 +37,11 @@ public class WebSecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(Arrays.asList("http://localhost:3000"));
+        String frontend = System.getenv("FRONTEND_ORIGIN");
+        if (frontend == null || frontend.isBlank()) {
+            frontend = "http://localhost:3000";
+        }
+        config.setAllowedOrigins(Arrays.asList(frontend));
         config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(Arrays.asList("*"));
         config.setAllowCredentials(true);
@@ -44,15 +52,21 @@ public class WebSecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        boolean prod = Arrays.asList(env.getActiveProfiles()).contains("prod");
+
+        if (prod) {
+            http.csrf(csrf -> csrf.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()));
+        } else {
+            http.csrf(csrf -> csrf.disable());
+        }
+
         http
-            .csrf(csrf -> csrf.disable()) // CSRF disabled for stateless APIs
-            .cors(cors -> cors.configurationSource(corsConfigurationSource())) // Fixed Lambda syntax
-            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-            .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/auth/**").permitAll() // Allow registration/login
-                .anyRequest().authenticated() // Protect everything else
-            )
-            .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/api/auth/**").permitAll()
+                        .anyRequest().authenticated())
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }

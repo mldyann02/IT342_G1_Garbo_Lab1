@@ -26,8 +26,9 @@ export default function DashboardPage() {
   }, [router]);
 
   const confirmLogout = () => {
-    localStorage.removeItem("token");
-    router.replace("/login");
+    api.post("/api/auth/logout").finally(() => {
+      router.replace("/login");
+    });
   };
 
   if (loading)

@@ -5,9 +5,13 @@ async function request(method: string, url: string, body?: any, opts: RequestIni
     ...(opts.headers as Record<string, string> | undefined),
   };
 
-  if (typeof window !== "undefined") {
-    const token = localStorage.getItem("token");
-    if (token) headers["Authorization"] = `Bearer ${token}`;
+  // Use cookie-based auth: include credentials so browser sends HttpOnly cookie
+  if (!opts.credentials) opts.credentials = "include";
+
+  // If server provides a CSRF cookie (XSRF-TOKEN), forward it in the header
+  if (typeof document !== "undefined") {
+    const match = document.cookie.match(/XSRF-TOKEN=([^;]+)/);
+    if (match) headers["X-XSRF-TOKEN"] = decodeURIComponent(match[1]);
   }
 
   if (body !== undefined && !(body instanceof FormData)) {
