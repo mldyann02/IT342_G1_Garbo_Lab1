@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import com.cit.authapplication.network.RetrofitClient
 
 class DashboardActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -28,33 +29,36 @@ class DashboardActivity : AppCompatActivity() {
                     if (response.isSuccessful) {
                         val user = response.body()
                         val display = when {
-                            !user?.firstName.isNullOrEmpty() -> "Welcome, ${user?.firstName} ${user?.lastName ?: ""}".trim()
-                            !user?.email.isNullOrEmpty() -> "Welcome, ${user?.email}"
-                            else -> "Welcome!"
+                            !user?.firstName.isNullOrEmpty() -> {
+                                val fullName = listOfNotNull(user?.firstName, user?.lastName).joinToString(" ").trim()
+                                getString(R.string.welcome_with_name, fullName)
+                            }
+                            !user?.email.isNullOrEmpty() -> getString(R.string.welcome_with_name, user?.email)
+                            else -> getString(R.string.welcome_default)
                         }
                         tvWelcome.text = display
                     } else {
-                        tvWelcome.text = "Welcome!"
+                        tvWelcome.text = getString(R.string.welcome_default)
                     }
                 }
 
                 override fun onFailure(call: retrofit2.Call<com.cit.authapplication.network.model.User>, t: Throwable) {
                     if (!name.isNullOrEmpty()) {
-                        tvWelcome.text = "Welcome, $name"
+                        tvWelcome.text = getString(R.string.welcome_with_name, name)
                     } else if (!email.isNullOrEmpty()) {
-                        tvWelcome.text = "Welcome, $email"
+                        tvWelcome.text = getString(R.string.welcome_with_name, email)
                     } else {
-                        tvWelcome.text = "Welcome!"
+                        tvWelcome.text = getString(R.string.welcome_default)
                     }
                 }
             })
         } catch (e: Exception) {
             if (!name.isNullOrEmpty()) {
-                tvWelcome.text = "Welcome, $name"
+                tvWelcome.text = getString(R.string.welcome_with_name, name)
             } else if (!email.isNullOrEmpty()) {
-                tvWelcome.text = "Welcome, $email"
+                tvWelcome.text = getString(R.string.welcome_with_name, email)
             } else {
-                tvWelcome.text = "Welcome!"
+                tvWelcome.text = getString(R.string.welcome_default)
             }
         }
 
