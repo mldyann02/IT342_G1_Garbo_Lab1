@@ -4,6 +4,8 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.TextView
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.cit.authapplication.network.RetrofitClient
 import com.cit.authapplication.network.model.User
@@ -48,12 +50,38 @@ class DashboardActivity : AppCompatActivity() {
         }
 
         btnLogout.setOnClickListener {
+            // Show logout confirmation dialog
+            showLogoutConfirmationDialog()
+        }
+    }
+
+    private fun showLogoutConfirmationDialog() {
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("Confirmation")
+        builder.setMessage("Are you sure you want to logout?")
+        
+        // Yes button - proceed with logout
+        builder.setPositiveButton("Yes") { dialog, which ->
+            // Clear token
+            com.cit.authapplication.network.TokenManager.clear(applicationContext)
+            
+            // Show logout confirmation toast
+            Toast.makeText(this, "You have been logged out successfully", Toast.LENGTH_SHORT).show()
+            
+            // Navigate to login screen
             val intent = Intent(this, LoginActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
-            com.cit.authapplication.network.TokenManager.clear(applicationContext)
             startActivity(intent)
             finish()
         }
+        
+        // No button - cancel and dismiss dialog
+        builder.setNegativeButton("No") { dialog, which ->
+            dialog.dismiss()
+        }
+        
+        val dialog = builder.create()
+        dialog.show()
     }
 
     private fun updateUserProfile(user: User?) {

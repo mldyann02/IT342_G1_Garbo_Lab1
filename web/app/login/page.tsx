@@ -25,7 +25,10 @@ export default function LoginPage() {
       // Server sets HttpOnly cookie on success; navigate to dashboard
       router.push("/dashboard");
     } catch (err: any) {
-      setError(err?.response?.data?.message || "Authentication failed.");
+      setError(
+        err?.response?.data?.message ||
+          "Authentication failed. Invalid email or password",
+      );
     } finally {
       setLoading(false);
     }
