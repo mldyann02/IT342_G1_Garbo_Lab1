@@ -1,18 +1,20 @@
 "use client";
 
 import React, { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import api from "../../api/axios";
 import NavBar from "../components/NavBar";
 import { Mail, Lock, Loader2, Eye, EyeOff } from "lucide-react";
 
 export default function LoginPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false); // Toggle state
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const successMessage = searchParams.get("message");
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -49,6 +51,12 @@ export default function LoginPage() {
           {error && (
             <div className="mb-6 p-3 bg-[#581F18] text-white font-bold text-xs uppercase text-center animate-shake">
               {error}
+            </div>
+          )}
+
+          {successMessage && (
+            <div className="mb-6 p-3 bg-green-600 text-white font-bold text-xs uppercase text-center">
+              {successMessage}
             </div>
           )}
 

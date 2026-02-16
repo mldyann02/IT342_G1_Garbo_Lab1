@@ -7,9 +7,12 @@ object TokenManager {
     private const val KEY_TOKEN = "auth_token"
 
     fun saveToken(context: Context, token: String?) {
-        val prefs = context.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
-        prefs.edit().putString(KEY_TOKEN, token).apply()
+        token?.let {
+            context.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
+                .edit().putString(KEY_TOKEN, it).apply()
+        }
     }
+
 
     fun getToken(context: Context): String? {
         val prefs = context.getSharedPreferences(PREFS, Context.MODE_PRIVATE)

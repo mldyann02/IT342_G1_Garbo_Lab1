@@ -62,8 +62,8 @@ export default function RegisterPage() {
       // Don't send confirmPassword to the backend
       const { confirmPassword, ...submitData } = formData;
       await api.post("/api/auth/register", submitData);
-      // Server sets HttpOnly cookie on success; navigate to login page
-      router.push("/login");
+      // Server sets HttpOnly cookie on success; navigate to login page with success message
+      router.push("/login?message=Registration successful. Please log in");
     } catch (err: any) {
       const resp = err?.response;
       let msg = "Registration failed. Check your details.";

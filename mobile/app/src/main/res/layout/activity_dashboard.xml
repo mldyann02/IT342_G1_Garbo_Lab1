@@ -3,49 +3,196 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="24dp"
     android:background="@color/background">
 
-    <TextView
-        android:id="@+id/tvDashboardTitle"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Dashboard"
-        android:textColor="@color/brand_navy"
-        android:textSize="24sp"
-        android:fontFamily="sans-serif-medium"
-        android:textStyle="bold"
-        android:gravity="center"
-        android:layout_marginTop="24dp"
-        />
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:fillViewport="true">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:background="@drawable/bg_card_rounded"
-        android:padding="20dp"
-        android:layout_marginTop="20dp"
-        android:elevation="2dp">
-
-        <TextView
-            android:id="@+id/tvWelcome"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Welcome!"
-            android:textSize="18sp"
-            android:textColor="@color/brand_navy"
-            android:layout_marginBottom="16dp" />
+            android:orientation="vertical"
+            android:padding="16dp">
 
-        <Button
-            android:id="@+id/btnLogout"
-            style="@style/Widget.AuthApp.Button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Logout"
-            android:layout_marginTop="4dp"
-            />
+            <!-- Header Section - Similar to web dashboard identity block -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@color/brand_terracotta"
+                android:padding="24dp"
+                android:gravity="center"
+                android:layout_marginBottom="16dp">
 
-    </LinearLayout>
+                <!-- User Initials Avatar -->
+                <FrameLayout
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:background="@drawable/bg_avatar_circle"
+                    android:layout_marginBottom="12dp">
+
+                    <TextView
+                        android:id="@+id/tvInitials"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:textColor="@color/brand_navy"
+                        android:textSize="28sp"
+                        android:textStyle="bold" />
+
+                </FrameLayout>
+
+                <!-- Full Name -->
+                <TextView
+                    android:id="@+id/tvFullName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@android:color/white"
+                    android:textSize="22sp"
+                    android:textStyle="bold"
+                    android:textAllCaps="true"
+                    android:letterSpacing="0.05" />
+
+            </LinearLayout>
+
+            <!-- User Profile Section -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="User Profile"
+                android:textColor="@color/brand_navy"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textAllCaps="true"
+                android:letterSpacing="0.05"
+                android:layout_marginBottom="16dp"
+                android:layout_marginStart="4dp" />
+
+            <!-- Email Card -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:background="@drawable/bg_card_rounded"
+                android:padding="16dp"
+                android:layout_marginBottom="12dp"
+                android:gravity="center_vertical">
+
+                <FrameLayout
+                    android:layout_width="44dp"
+                    android:layout_height="44dp"
+                    android:background="@color/brand_yellow">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:text="✉"
+                        android:textSize="20sp"
+                        android:textColor="@color/brand_navy" />
+
+                </FrameLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:layout_marginStart="16dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Email"
+                        android:textColor="@color/text_gray"
+                        android:textSize="11sp"
+                        android:textAllCaps="true"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tvEmail"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/brand_navy"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        android:layout_marginTop="2dp" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <!-- Gender Card -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:background="@drawable/bg_card_rounded"
+                android:padding="16dp"
+                android:layout_marginBottom="24dp"
+                android:gravity="center_vertical">
+
+                <FrameLayout
+                    android:layout_width="44dp"
+                    android:layout_height="44dp"
+                    android:background="@color/brand_navy">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:text="👤"
+                        android:textSize="20sp"
+                        android:textColor="@android:color/white" />
+
+                </FrameLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:layout_marginStart="16dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Gender"
+                        android:textColor="@color/text_gray"
+                        android:textSize="11sp"
+                        android:textAllCaps="true"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tvGender"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/brand_navy"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        android:capitalize="words"
+                        android:layout_marginTop="2dp" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <!-- Logout Button -->
+            <Button
+                android:id="@+id/btnLogout"
+                style="@style/Widget.AuthApp.Button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Logout Session"
+                android:textAllCaps="true"
+                android:textSize="12sp"
+                android:paddingVertical="12dp" />
+
+        </LinearLayout>
+
+    </ScrollView>
 
 </LinearLayout>
