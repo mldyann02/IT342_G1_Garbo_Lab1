@@ -4,23 +4,37 @@
 
 ## Project Overview
 
-This project implements a secure User Registration and Authentication system. It features a high-fidelity geometric UI inspired by modern design principles, focusing on robust security measures including **BCrypt password encryption**, **JWT-based session management**, and **strict client-side validation**.
+This project implements a secure, full-stack **User Registration and Authentication System** as a multi-platform solution supporting web and mobile clients. The system features a high-fidelity geometric UI inspired by modern design principles, with bold shapes (circles, rounded cards) and a vibrant color palette creating a visually distinctive user experience.
+
+### Architecture
+
+- **RESTful Backend**: Spring Boot API handling authentication logic, user data persistence, and JWT token generation
+- **Web Client**: Next.js 14 application with server-side rendering and responsive Tailwind CSS layouts
+- **Mobile Client**: Native Android application using Kotlin with Retrofit for seamless API communication
+
+### Security Features
+
+- **BCrypt Password Hashing**: Industry-standard bcrypt algorithm for secure password storage
+- **JWT Token-Based Authentication**: Stateless session management with secure token validation
+- **Client-Side Validation**: Real-time input validation using regex patterns for email format and password strength requirements (minimum 8 characters, at least one uppercase letter, one lowercase letter, one digit, and one special character)
+- **Protected Endpoints**: Secured API routes requiring valid JWT tokens for access
 
 ## Technologies Used
 
 - **Backend:** Java 17, Spring Boot, Spring Security, JPA, MySQL (XAMPP)
 - **Web Frontend:** Next.js 14, React, Tailwind CSS, Lucide React (Icons)
-- **State Management:** React Hooks (useState, useEffect)
+- **Mobile Frontend:** Kotlin, Android Studio, XML Layouts, Retrofit 2, OkHttp
 - **Security:** BCrypt, JWT, Regex-based Password Validation
 
 ## Folder Structure
 
-├── backend/ # Spring Boot REST API (Java 17)
-├── web/ # Next.js Web Application
-├── docs/ # Project documentation & FRS PDF
-└── mobile/ # Mobile app placeholder (future development)
-
----
+```
+.
+├── backend/   # Spring Boot REST API (Java 17)
+├── web/       # Next.js Web Application
+├── docs/      # Project documentation & FRS PDF
+└── mobile/    # Mobile app placeholder (future development)
+```
 
 ## Setup Instructions
 
@@ -40,9 +54,10 @@ This project implements a secure User Registration and Authentication system. It
 
 ### 3. Mobile App (Session 2)
 
-1. Navigate to the mobile directory: `cd mobile`
-2. _Implementation pending._
-3. Follow platform-specific instructions (Android/iOS) once source code is initialized.
+1. Open the mobile/ folder in Android Studio.
+2. Base URL Configuration: Ensure the Retrofit client is pointing to http://10.0.2.2:8080 (the special loopback for the Android Emulator).
+3. Permissions: Check AndroidManifest.xml for <uses-permission android:name="android.permission.INTERNET" /> and android:usesCleartextTraffic="true".
+4. Build and run on an Android Emulator (API 30+).
 
 ---
 
