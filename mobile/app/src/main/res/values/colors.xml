@@ -15,4 +15,5 @@
     <color name="brand_terracotta">#D95D39</color>
     <color name="brand_navy">#202C59</color>
     <color name="brand_maroon">#581F18</color>
+    <color name="text_gray">#64748B</color>
 </resources>

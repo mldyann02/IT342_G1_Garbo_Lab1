@@ -15,59 +15,67 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/auth")
 public class AuthController {
 
-    private final AuthService authService;
-    private final org.springframework.core.env.Environment env;
+        private final AuthService authService;
 
-    public AuthController(AuthService authService, org.springframework.core.env.Environment env) {
-        this.authService = authService;
-        this.env = env;
-    }
-
-    @PostMapping("/register")
-    public ResponseEntity<AuthResponse> register(@Valid @RequestBody RegisterRequest req) {
-        AuthResponse resp = authService.register(req);
-        String token = resp.getToken();
-        boolean prod = Arrays.asList(env.getActiveProfiles()).contains("prod");
-        ResponseCookie.ResponseCookieBuilder b = ResponseCookie.from("token", token)
-                .httpOnly(true)
-                .path("/")
-                .maxAge(7 * 24 * 60 * 60);
-        if (prod) {
-            b.sameSite("None").secure(true);
-        } else {
-            b.sameSite("Lax").secure(false);
+        public AuthController(AuthService authService) {
+                this.authService = authService;
         }
-        ResponseCookie cookie = b.build();
-        // Do NOT return token in body to avoid exposing it in dev or prod
-        return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString()).body(new AuthResponse(null));
-    }
 
-    @PostMapping("/login")
-    public ResponseEntity<AuthResponse> login(@Valid @RequestBody LoginRequest req) {
-        AuthResponse resp = authService.login(req);
-        String token = resp.getToken();
-        boolean prod = Arrays.asList(env.getActiveProfiles()).contains("prod");
-        ResponseCookie.ResponseCookieBuilder b2 = ResponseCookie.from("token", token)
-                .httpOnly(true)
-                .path("/")
-                .maxAge(7 * 24 * 60 * 60);
-        if (prod) {
-            b2.sameSite("None").secure(true);
-        } else {
-            b2.sameSite("Lax").secure(false);
+        @PostMapping("/register")
+        public ResponseEntity<AuthResponse> register(@Valid @RequestBody RegisterRequest req) {
+                try {
+                        AuthResponse resp = authService.register(req);
+                        String token = resp.getToken();
+
+                        ResponseCookie cookie = ResponseCookie.from("token", token)
+                                        .httpOnly(true)
+                                        .path("/")
+                                        .maxAge(7 * 24 * 60 * 60)
+                                        .sameSite("Lax")
+                                        .secure(false)
+                                        .build();
+
+                        return ResponseEntity.ok()
+                                        .header(HttpHeaders.SET_COOKIE, cookie.toString())
+                                        .body(new AuthResponse(token, null));
+                } catch (IllegalArgumentException e) {
+                        return ResponseEntity.badRequest()
+                                        .body(new AuthResponse(null, e.getMessage()));
+                } catch (Exception e) {
+                        e.printStackTrace();
+                        return ResponseEntity.internalServerError()
+                                        .body(new AuthResponse(null, "Server error"));
+                }
         }
-        ResponseCookie cookie2 = b2.build();
-        // Do NOT return token in body to avoid exposing it in dev or prod
-        return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie2.toString()).body(new AuthResponse(null));
-    }
 
-    @PostMapping("/logout")
-    public ResponseEntity<Void> logout() {
-        ResponseCookie cookie = ResponseCookie.from("token", "")
-                .httpOnly(true)
-                .path("/")
-                .maxAge(0)
-                .build();
-        return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString()).build();
-    }
+        @PostMapping("/login")
+        public ResponseEntity<AuthResponse> login(@Valid @RequestBody LoginRequest req) {
+                AuthResponse resp = authService.login(req);
+                String token = resp.getToken();
+
+                ResponseCookie cookie = ResponseCookie.from("token", token)
+                                .httpOnly(true)
+                                .path("/")
+                                .maxAge(7 * 24 * 60 * 60)
+                                .sameSite("Lax")
+                                .secure(false)
+                                .build();
+
+                return ResponseEntity.ok()
+                                .header(HttpHeaders.SET_COOKIE, cookie.toString())
+                                .body(resp);
+        }
+
+        @PostMapping("/logout")
+        public ResponseEntity<Void> logout() {
+                ResponseCookie cookie = ResponseCookie.from("token", "")
+                                .httpOnly(true)
+                                .path("/")
+                                .maxAge(0)
+                                .build();
+
+                return ResponseEntity.ok()
+                                .header(HttpHeaders.SET_COOKIE, cookie.toString())
+                                .build();
+        }
 }

@@ -17,6 +17,10 @@ public class JwtFilter extends OncePerRequestFilter {
 
     private final JwtUtils jwtUtils;
     private final com.citu.backend.repository.UserRepository userRepository;
+    private static final String[] PUBLIC_PATHS = {
+            "/api/auth/register",
+            "/api/auth/login"
+    };
 
     public JwtFilter(JwtUtils jwtUtils, com.citu.backend.repository.UserRepository userRepository) {
         this.jwtUtils = jwtUtils;
@@ -26,6 +30,15 @@ public class JwtFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
+
+        String path = request.getServletPath();
+        for (String p : PUBLIC_PATHS) {
+            if (path.equalsIgnoreCase(p)) {
+                filterChain.doFilter(request, response);
+                return;
+            }
+        }
+
         String header = request.getHeader("Authorization");
         String token = null;
         if (header != null && header.startsWith("Bearer ")) {

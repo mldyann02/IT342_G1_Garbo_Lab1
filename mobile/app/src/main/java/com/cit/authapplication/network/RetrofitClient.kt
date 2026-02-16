@@ -16,7 +16,7 @@ object RetrofitClient {
 
     // Will be initialized via init(context)
     private var _apiService: ApiService? = null
-
+    @Synchronized
     fun init(context: android.content.Context) {
         val client = OkHttpClient.Builder()
             .addInterceptor(AuthInterceptor(context))
