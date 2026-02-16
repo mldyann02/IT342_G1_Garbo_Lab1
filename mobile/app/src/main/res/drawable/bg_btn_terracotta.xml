@@ -11,7 +11,7 @@
             </item>
         </layer-list>
     </item>
-    <!-- Enabled state - matching web btn-enroll style -->
+    <!-- Enabled state - matching web terracotta button style -->
     <item>
         <layer-list>
             <!-- Shadow layer -->
@@ -22,9 +22,9 @@
                 </shape>
             </item>
             <!-- Main button layer offset for shadow effect -->
-            <item android:bottom="4dp" android:left="0dp" android:right="4dp" android:top="0dp">
+            <item android:bottom="6dp" android:left="0dp" android:right="6dp" android:top="0dp">
                 <shape android:shape="rectangle">
-                    <solid android:color="@color/brand_orange" />
+                    <solid android:color="@color/brand_terracotta" />
                     <corners android:radius="4dp" />
                 </shape>
             </item>

@@ -1,17 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <!-- Disabled state -->
-    <item android:state_enabled="false">
-        <layer-list>
-            <item>
-                <shape android:shape="rectangle">
-                    <solid android:color="#E0E0E0" />
-                    <corners android:radius="4dp" />
-                </shape>
-            </item>
-        </layer-list>
-    </item>
-    <!-- Enabled state - matching web btn-enroll style -->
     <item>
         <layer-list>
             <!-- Shadow layer -->
@@ -22,9 +10,9 @@
                 </shape>
             </item>
             <!-- Main button layer offset for shadow effect -->
-            <item android:bottom="4dp" android:left="0dp" android:right="4dp" android:top="0dp">
+            <item android:bottom="6dp" android:left="0dp" android:right="6dp" android:top="0dp">
                 <shape android:shape="rectangle">
-                    <solid android:color="@color/brand_orange" />
+                    <solid android:color="@color/brand_maroon" />
                     <corners android:radius="4dp" />
                 </shape>
             </item>

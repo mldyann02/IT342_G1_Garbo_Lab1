@@ -2,11 +2,12 @@ package com.cit.authapplication
 
 import android.content.Intent
 import android.os.Bundle
+import android.text.Editable
 import android.text.InputType
-import android.view.MotionEvent
+import android.text.TextWatcher
+import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import com.cit.authapplication.network.RetrofitClient
 import com.cit.authapplication.network.TokenManager
 import com.cit.authapplication.network.model.RegisterRequest
@@ -17,6 +18,14 @@ import retrofit2.Response
 
 class RegisterActivity : AppCompatActivity() {
 
+    private lateinit var tvRuleLength: TextView
+    private lateinit var tvRuleUpper: TextView
+    private lateinit var tvRuleNumber: TextView
+    private lateinit var tvRuleSpecial: TextView
+    private lateinit var tvRuleMatch: TextView
+    private var isPasswordVisible = false
+    private var isConfirmVisible = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_register)
@@ -26,41 +35,70 @@ class RegisterActivity : AppCompatActivity() {
         val etEmail = findViewById<EditText>(R.id.etEmail)
         val etPassword = findViewById<EditText>(R.id.etPassword)
         val etConfirm = findViewById<EditText>(R.id.etConfirmPassword)
-        val rgGender = findViewById<RadioGroup>(R.id.rgGender)
+        val spinnerGender = findViewById<Spinner>(R.id.spinnerGender)
         val btnRegister = findViewById<Button>(R.id.btnRegister)
         val tvLoginLink = findViewById<TextView>(R.id.tvLoginLink)
+        val tvError = findViewById<TextView>(R.id.tvError)
+        
+        // Validation rule text views
+        tvRuleLength = findViewById(R.id.tvRuleLength)
+        tvRuleUpper = findViewById(R.id.tvRuleUpper)
+        tvRuleNumber = findViewById(R.id.tvRuleNumber)
+        tvRuleSpecial = findViewById(R.id.tvRuleSpecial)
+        tvRuleMatch = findViewById(R.id.tvRuleMatch)
 
-        // Setup password visibility toggle
-        fun setupToggle(editText: EditText) {
-            val eyeResId = resources.getIdentifier("design_password_eye", "drawable", packageName)
-            val eyeDrawable = if (eyeResId != 0) ContextCompat.getDrawable(this, eyeResId) else null
-            eyeDrawable?.let { d ->
-                editText.setCompoundDrawablesWithIntrinsicBounds(null, null, d, null)
-                editText.setOnTouchListener { _, event ->
-                    if (event.action == MotionEvent.ACTION_UP) {
-                        val drawableEnd = 2
-                        val drawable = editText.compoundDrawables[drawableEnd]
-                        if (drawable != null) {
-                            val touchX = event.x.toInt()
-                            if (touchX >= editText.width - editText.paddingEnd - drawable.intrinsicWidth) {
-                                val isVisible = (editText.inputType and InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD) ==
-                                        InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
-                                editText.inputType = if (isVisible)
-                                    InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
-                                else
-                                    InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
-                                editText.setSelection(editText.text.length)
-                                return@setOnTouchListener true
-                            }
-                        }
-                    }
-                    false
-                }
+        // Setup gender spinner
+        val genderOptions = arrayOf("Select Identity", "Male", "Female", "Other")
+        spinnerGender.adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, genderOptions)
+
+        // Setup password toggle buttons
+        val btnTogglePassword = findViewById<ImageButton>(R.id.btnTogglePassword)
+        val btnToggleConfirmPassword = findViewById<ImageButton>(R.id.btnToggleConfirmPassword)
+
+        btnTogglePassword.setOnClickListener {
+            isPasswordVisible = !isPasswordVisible
+            if (isPasswordVisible) {
+                etPassword.inputType = InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
+                btnTogglePassword.setImageResource(R.drawable.ic_visibility)
+            } else {
+                etPassword.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
+                btnTogglePassword.setImageResource(R.drawable.ic_visibility_off)
+            }
+            etPassword.setSelection(etPassword.text?.length ?: 0)
+        }
+
+        btnToggleConfirmPassword.setOnClickListener {
+            isConfirmVisible = !isConfirmVisible
+            if (isConfirmVisible) {
+                etConfirm.inputType = InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
+                btnToggleConfirmPassword.setImageResource(R.drawable.ic_visibility)
+            } else {
+                etConfirm.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
+                btnToggleConfirmPassword.setImageResource(R.drawable.ic_visibility_off)
+            }
+            etConfirm.setSelection(etConfirm.text?.length ?: 0)
+        }
+
+        // Real-time password validation
+        val passwordWatcher = object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+            override fun afterTextChanged(s: Editable?) {
+                val password = s?.toString() ?: ""
+                updateValidationUI(password, etConfirm.text?.toString() ?: "")
             }
         }
 
-        setupToggle(etPassword)
-        setupToggle(etConfirm)
+        val confirmWatcher = object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+            override fun afterTextChanged(s: Editable?) {
+                updateValidationUI(etPassword.text?.toString() ?: "", s?.toString() ?: "")
+            }
+        }
+
+        etPassword.addTextChangedListener(passwordWatcher)
+        etConfirm.addTextChangedListener(confirmWatcher)
 
         btnRegister.setOnClickListener {
             val firstName = etFirstName.text.toString().trim()
@@ -69,10 +107,11 @@ class RegisterActivity : AppCompatActivity() {
             val password = etPassword.text.toString()
             val confirm = etConfirm.text.toString()
 
-            val gender = when (rgGender.checkedRadioButtonId) {
-                R.id.rbMale -> "male"
-                R.id.rbFemale -> "female"
-                R.id.rbOther -> "other"
+            val genderPosition = spinnerGender.selectedItemPosition
+            val gender = when (genderPosition) {
+                1 -> "male"
+                2 -> "female"
+                3 -> "other"
                 else -> ""
             }
 
@@ -83,6 +122,10 @@ class RegisterActivity : AppCompatActivity() {
             if (email.isEmpty()) { etEmail.error = "Required"; valid = false }
             if (password.isEmpty()) { etPassword.error = "Required"; valid = false }
             if (confirm.isEmpty()) { etConfirm.error = "Required"; valid = false }
+            if (genderPosition == 0) {
+                Toast.makeText(this, "Please select gender", Toast.LENGTH_SHORT).show()
+                valid = false
+            }
 
             val lengthOk = password.length >= 8
             val upperOk = Regex("[A-Z]").containsMatchIn(password)
@@ -90,13 +133,18 @@ class RegisterActivity : AppCompatActivity() {
             val specialOk = Regex("[!@#\\$%\\^&*(),.?\":{}|<>]").containsMatchIn(password)
             val matchOk = password == confirm && confirm.isNotEmpty()
 
-            if (!lengthOk) { etPassword.error = "Requires 8+ characters"; valid = false }
-            if (!upperOk) { etPassword.error = "Requires uppercase letter"; valid = false }
-            if (!numberOk) { etPassword.error = "Requires number"; valid = false }
-            if (!specialOk) { etPassword.error = "Requires special character"; valid = false }
-            if (!matchOk) { etConfirm.error = "Passwords do not match"; valid = false }
+            if (!lengthOk || !upperOk || !numberOk || !specialOk || !matchOk) {
+                valid = false
+            }
 
-            if (!valid) return@setOnClickListener
+            if (!valid) {
+                tvError.text = "Please ensure the password meets all security requirements."
+                tvError.visibility = View.VISIBLE
+                return@setOnClickListener
+            }
+
+            // Hide error and proceed
+            tvError.visibility = View.GONE
 
             // Clear existing token
             TokenManager.clear(applicationContext)
@@ -120,25 +168,55 @@ class RegisterActivity : AppCompatActivity() {
                                 finish()
                             }
                             !error.isNullOrEmpty() -> {
-                                Toast.makeText(this@RegisterActivity, "Registration failed: $error", Toast.LENGTH_LONG).show()
+                                tvError.text = error
+                                tvError.visibility = View.VISIBLE
                             }
                             else -> {
-                                Toast.makeText(this@RegisterActivity, "Unknown registration error", Toast.LENGTH_LONG).show()
+                                tvError.text = "Registration failed"
+                                tvError.visibility = View.VISIBLE
                             }
                         }
                     } else {
-                        Toast.makeText(this@RegisterActivity, "Registration failed: ${response.code()}", Toast.LENGTH_LONG).show()
+                        if (response.code() == 409) {
+                            tvError.text = "Email already exists. Cannot register."
+                        } else {
+                            tvError.text = "Registration failed. Check your details."
+                        }
+                        tvError.visibility = View.VISIBLE
                     }
                 }
 
                 override fun onFailure(call: Call<AuthResponse>, t: Throwable) {
-                    Toast.makeText(this@RegisterActivity, "Network error: ${t.localizedMessage}", Toast.LENGTH_LONG).show()
+                    tvError.text = "Network error. Please try again."
+                    tvError.visibility = View.VISIBLE
                 }
             })
         }
 
         tvLoginLink.setOnClickListener {
             startActivity(Intent(this, LoginActivity::class.java))
+        }
+    }
+
+    private fun updateValidationUI(password: String, confirmPassword: String) {
+        val lengthOk = password.length >= 8
+        val upperOk = Regex("[A-Z]").containsMatchIn(password)
+        val numberOk = Regex("[0-9]").containsMatchIn(password)
+        val specialOk = Regex("[!@#\\$%\\^&*(),.?\":{}|<>]").containsMatchIn(password)
+        val matchOk = password == confirmPassword && confirmPassword.isNotEmpty()
+
+        updateRuleColor(tvRuleLength, lengthOk)
+        updateRuleColor(tvRuleUpper, upperOk)
+        updateRuleColor(tvRuleNumber, numberOk)
+        updateRuleColor(tvRuleSpecial, specialOk)
+        updateRuleColor(tvRuleMatch, matchOk)
+    }
+
+    private fun updateRuleColor(textView: TextView, isValid: Boolean) {
+        if (isValid) {
+            textView.setTextColor(resources.getColor(R.color.green_600, null))
+        } else {
+            textView.setTextColor(resources.getColor(R.color.text_gray, null))
         }
     }
 }
